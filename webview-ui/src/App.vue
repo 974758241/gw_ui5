@@ -95,9 +95,9 @@ const filterTableData = computed(() =>
           <el-button size="small" @click="handleDownLoadClick(scope.$index, scope.row.title)"
             >下载</el-button
           >
-          <el-button size="small" type="danger" @click="handleDeleteClick(scope.$index, scope.row.title)"
+          <!-- <el-button size="small" type="danger" @click="handleDeleteClick(scope.$index, scope.row.title)"
             >删除</el-button
-          >
+          > -->
         </template>
       </el-table-column>
     </el-table>
