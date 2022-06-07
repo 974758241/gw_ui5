@@ -2,7 +2,7 @@
   "name": "ui5-list",
   "displayName": "ui5-list",
   "description": "目前主要下载SAPUI5程序 从ABAP repository下载",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "keywords": [
     "ui5 list",
     "gateway",
