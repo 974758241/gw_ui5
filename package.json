@@ -2,7 +2,7 @@
   "name": "ui5-list",
   "displayName": "ui5-list",
   "description": "目前主要下载SAPUI5程序 从ABAP repository下载",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "keywords": [
     "ui5 list",
     "gateway",
@@ -24,7 +24,8 @@
       {
         "command": "UI5.getUI5List",
         "title": "从ABAP服务器下载UI5工程"
-      },{
+      },
+      {
         "command": "UI5.updateUI5Porject",
         "title": "从ABAP服务器更新当前工程"
       }
@@ -34,11 +35,11 @@
         {
           "command": "UI5.getUI5List",
           "group": "navigation"
-        },{
+        },
+        {
           "command": "UI5.updateUI5Porject",
           "group": "navigation"
         }
-     
       ]
     }
   },
@@ -60,7 +61,6 @@
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
     "eslint": "^7.19.0",
-    "fast-xml-parser": "^4.0.8",
     "glob": "^7.1.6",
     "prettier": "^2.2.1",
     "typescript": "^4.1.3",
@@ -69,7 +69,7 @@
   "publisher": "zhuguoyou",
   "dependencies": {
     "axios": "^0.27.2",
-    "fast-xml-parser": "^4.0.8"
+    "fast-xml-parser": "^4.3.4"
   },
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {

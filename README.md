@@ -25,7 +25,8 @@
 ```
 
 ![使用说明过](https://raw.githubusercontent.com/974758241/gw_ui5/master/images/%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.png)
-
+## 注意:
+1. 如果在线安装不行,直接使用vsix 进行安装
 
 ## 还有改进的地方 国际化,支持更多的SAP 相关操作,以及还有隐藏的bug需要处理
 ### 如果有更好的建议或者意见可以在github上提出 issue
