@@ -4,6 +4,7 @@ import axios from "axios";
 import { XMLParser } from "fast-xml-parser";
 // import   downloadFile
 import FileAndFloderAction from "../utilities/downloadFile";
+import * as fs from 'fs';
 
 /**
  * 该类管理HelloWorld webview 面板 的状态和行为。
@@ -16,6 +17,7 @@ import FileAndFloderAction from "../utilities/downloadFile";
  * - 设置消息监听器，以便数据可以在webview和扩展之间传递
  */
 export class UI5Panel {
+
   public static currentPanel: UI5Panel | any;
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
@@ -50,12 +52,78 @@ export class UI5Panel {
     // Set an event listener to listen for messages passed from the webview context
     this._setWebviewMessageListener(this._panel.webview);
   }
+  // 测试能否连接到SAP系统
+  public static testConnection(){
+    return new Promise((resolve, reject) => {
+      axios({
+        method: 'get',
+        url: `${UI5Panel.baseURL}/sap/bc/adt/filestore/ui5-bsp/objects`,
+        auth: {
+          username: UI5Panel.useName,
+          password: UI5Panel.usePwd
+        },
+      }).then((res: any) => {
+        resolve(true);
+      }).catch((err: any) => {
+        reject(false);
+      });
+    });
 
+  };
+  public static updateProject(obj:any){
+    // 首先删除 obj.updateFolder这个目录下的所有文件
+FileAndFloderAction.baseURL = obj.baseURL;
+FileAndFloderAction.useName = obj.useName;
+FileAndFloderAction.usePwd = obj.usePwd;
+FileAndFloderAction.systemIdentification = obj.systemIdentification;
+FileAndFloderAction.sapClient = obj.sapClient;
+FileAndFloderAction.targetFolder = obj.updateFolder;
+
+FileAndFloderAction.deleteFolder(obj.updateFolder);
+ 
+    // 然后再下载
+    // uri地址 转义
+    // 获取obj.updateFolder上一次目录作为根目录,也就是项目的名称
+    // C:\\Users\\ZMM_PRO\\webapp 得到 ZMM_PRO
+    // 判读系统进行分割
+    let arrT ="";
+    let reg = /\//g;
+    if (process.platform === 'darwin') {//mac系统
+      arrT = obj.updateFolder.split("/");
+    } else if (process.platform === 'win32') {//windows系统
+      arrT = obj.updateFolder.split("\\");
+     
+    }
+    //创建webpp 或者用户指定的目录
+    let webpp = arrT[arrT.length - 1];
+    let targetFolder = obj.updateFolder + "\\" + webpp;
+    // fs.mkdirSync(targetFolder);
+
+    let objName =arrT[arrT.length-2] ;
+    // 如果obj.appName存在,则使用obj.appName作为项目名称
+    if (obj.appName) {
+      objName = obj.appName;
+    }
+    FileAndFloderAction.appName = obj.appName;
+      axios({
+        method: 'get',
+        url: `${UI5Panel.baseURL}/sap/bc/adt/filestore/ui5-bsp/objects/${objName}/content`,
+        auth: {
+          username: UI5Panel.useName,
+          password: UI5Panel.usePwd
+        },
+      }).then((res: any) => {
+        console.log("res", res);
+        FileAndFloderAction.upDateFile(res.data);
+        window.showInformationMessage("工程更新成功");
+        
+      });
+  };
   /**
    * 渲染当前的webview面板，如果它存在的话，否则将创建一个新的webview面板。
    * @param extensionUri 包含扩展的目录的URI。
    */
-  public static render(extensionUri: Uri) {
+public static render(extensionUri: Uri) {
 console.log("baseURL",UI5Panel.baseURL);
 console.log("useName",UI5Panel.useName);
 console.log("usePwd",UI5Panel.usePwd);
@@ -103,7 +171,10 @@ FileAndFloderAction.targetFolder = UI5Panel.targetFolder;
 
 
     }).then((res: any) => {
-      UI5Panel.currentPanel._panel.webview.postMessage({ command: "ui5-rt-version", data: res.data });
+      UI5Panel.currentPanel._panel.webview.postMessage({ command: "ui5-rt-version", data: res.data }); // 发送消息
+    }).catch((err: any) => {
+      window.showErrorMessage("SAP系统连接失败");
+      window.showErrorMessage(err);
     });
 
     axios({
@@ -224,7 +295,9 @@ FileAndFloderAction.targetFolder = UI5Panel.targetFolder;
     }).then((res: any) => {
       console.log("res", res);
       console.log("uri", uri);
+      debugger;
       FileAndFloderAction.createFileAndFloder(uri.replace(/\//g,"\\"), res.data);
+      UI5Panel.currentPanel._panel.webview.postMessage({ command: "ui5-download-object-complete", data: "工程下载成功" });
     });
   }
   private myParseXml(xml: string) {

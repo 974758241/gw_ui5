@@ -2,7 +2,7 @@
   "name": "ui5-list",
   "displayName": "ui5-list",
   "description": "目前主要下载SAPUI5程序 从ABAP repository下载",
-  "version": "0.0.5",
+  "version": "0.0.8",
   "keywords": [
     "ui5 list",
     "gateway",
@@ -23,7 +23,10 @@
     "commands": [
       {
         "command": "UI5.getUI5List",
-        "title": "从UI5服务器导入UI5工程"
+        "title": "从ABAP服务器下载UI5工程"
+      },{
+        "command": "UI5.updateUI5Porject",
+        "title": "从ABAP服务器更新当前工程"
       }
     ],
     "menus": {
@@ -31,7 +34,11 @@
         {
           "command": "UI5.getUI5List",
           "group": "navigation"
+        },{
+          "command": "UI5.updateUI5Porject",
+          "group": "navigation"
         }
+     
       ]
     }
   },
@@ -43,7 +50,8 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts"
+    "lint": "eslint src --ext ts",
+    "vsce_publish": "vsce publish "
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",

@@ -35,6 +35,70 @@ class UI5Panel {
         // Set an event listener to listen for messages passed from the webview context
         this._setWebviewMessageListener(this._panel.webview);
     }
+    // 测试能否连接到SAP系统
+    static testConnection() {
+        return new Promise((resolve, reject) => {
+            (0, axios_1.default)({
+                method: 'get',
+                url: `${UI5Panel.baseURL}/sap/bc/adt/filestore/ui5-bsp/objects`,
+                auth: {
+                    username: UI5Panel.useName,
+                    password: UI5Panel.usePwd
+                },
+            }).then((res) => {
+                resolve(true);
+            }).catch((err) => {
+                reject(false);
+            });
+        });
+    }
+    ;
+    static updateProject(obj) {
+        // 首先删除 obj.updateFolder这个目录下的所有文件
+        downloadFile_1.default.baseURL = obj.baseURL;
+        downloadFile_1.default.useName = obj.useName;
+        downloadFile_1.default.usePwd = obj.usePwd;
+        downloadFile_1.default.systemIdentification = obj.systemIdentification;
+        downloadFile_1.default.sapClient = obj.sapClient;
+        downloadFile_1.default.targetFolder = obj.updateFolder;
+        downloadFile_1.default.deleteFolder(obj.updateFolder);
+        // 然后再下载
+        // uri地址 转义
+        // 获取obj.updateFolder上一次目录作为根目录,也就是项目的名称
+        // C:\\Users\\ZMM_PRO\\webapp 得到 ZMM_PRO
+        // 判读系统进行分割
+        let arrT = "";
+        let reg = /\//g;
+        if (process.platform === 'darwin') { //mac系统
+            arrT = obj.updateFolder.split("/");
+        }
+        else if (process.platform === 'win32') { //windows系统
+            arrT = obj.updateFolder.split("\\");
+        }
+        //创建webpp 或者用户指定的目录
+        let webpp = arrT[arrT.length - 1];
+        let targetFolder = obj.updateFolder + "\\" + webpp;
+        // fs.mkdirSync(targetFolder);
+        let objName = arrT[arrT.length - 2];
+        // 如果obj.appName存在,则使用obj.appName作为项目名称
+        if (obj.appName) {
+            objName = obj.appName;
+        }
+        downloadFile_1.default.appName = obj.appName;
+        (0, axios_1.default)({
+            method: 'get',
+            url: `${UI5Panel.baseURL}/sap/bc/adt/filestore/ui5-bsp/objects/${objName}/content`,
+            auth: {
+                username: UI5Panel.useName,
+                password: UI5Panel.usePwd
+            },
+        }).then((res) => {
+            console.log("res", res);
+            downloadFile_1.default.upDateFile(res.data);
+            vscode_1.window.showInformationMessage("工程更新成功");
+        });
+    }
+    ;
     /**
      * 渲染当前的webview面板，如果它存在的话，否则将创建一个新的webview面板。
      * @param extensionUri 包含扩展的目录的URI。
@@ -79,7 +143,10 @@ class UI5Panel {
                 password: UI5Panel.usePwd
             },
         }).then((res) => {
-            UI5Panel.currentPanel._panel.webview.postMessage({ command: "ui5-rt-version", data: res.data });
+            UI5Panel.currentPanel._panel.webview.postMessage({ command: "ui5-rt-version", data: res.data }); // 发送消息
+        }).catch((err) => {
+            vscode_1.window.showErrorMessage("SAP系统连接失败");
+            vscode_1.window.showErrorMessage(err);
         });
         (0, axios_1.default)({
             method: 'get',
@@ -186,7 +253,9 @@ class UI5Panel {
         }).then((res) => {
             console.log("res", res);
             console.log("uri", uri);
+            debugger;
             downloadFile_1.default.createFileAndFloder(uri.replace(/\//g, "\\"), res.data);
+            UI5Panel.currentPanel._panel.webview.postMessage({ command: "ui5-download-object-complete", data: "工程下载成功" });
         });
     }
     myParseXml(xml) {
