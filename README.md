@@ -48,3 +48,4 @@
 ### 预更新如下
 1. 添加和服务文件对比的功能,对于不使用git作为管理的团队的操作，还是很有用的
 ![更改历史](https://raw.githubusercontent.com/974758241/gw_ui5/master/images/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%96%87%E4%BB%B6%E7%89%88%E6%9C%AC%E5%88%97%E8%A1%A8.png)
+# 0.1.0 对于部分json文件下失败的处理

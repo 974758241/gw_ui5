@@ -139,7 +139,7 @@ class FileAndFloderAction {
                         }
                     }).then((res) => {
                         // 若是manifest.json文件和resources.json
-                        if (element.src.indexOf('manifest.json') > -1 || element.src.indexOf('resources.json') > -1) {
+                        if (element.src.indexOf('json') > -1) {
                             // 对象转字符串
                             res.data = JSON.stringify(res.data);
                         }

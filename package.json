@@ -2,7 +2,7 @@
   "name": "ui5-list",
   "displayName": "ui5-list",
   "description": "目前主要下载SAPUI5程序 从ABAP repository下载",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "keywords": [
     "ui5 list",
     "gateway",
@@ -52,7 +52,8 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "vsce_publish": "vsce publish "
+    "vsce_publish": "vsce publish ",
+    "build": "vsce package"
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",
@@ -63,7 +64,7 @@
     "eslint": "^7.19.0",
     "glob": "^7.1.6",
     "prettier": "^2.2.1",
-    "typescript": "^4.1.3",
+    "typescript": "^4.9.5",
     "vscode-test": "^1.5.0"
   },
   "publisher": "zhuguoyou",
